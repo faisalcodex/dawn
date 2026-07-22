@@ -1,0 +1,38 @@
+<style>
+.text-left{
+text-align:left;
+}
+
+
+.text-center{
+text-align:center;
+}
+
+
+.text-right{
+text-align:right;
+}
+</style>
+
+<div id="text-section" class="{{ section.settings.alignment }}">
+<h1> We are muslims</h1>
+<p> We use to offer prayer 5 times a day and keep fast for month in ramadan. </p>
+</div>
+
+{% schema %}
+{
+  "name": "Text Section",
+  "settings": [{
+   "type": "text_alignment",
+   "id": "alignment",
+   "label": "Text alignment",
+   "default": "center"
+}
+  ],
+  "presets": [
+    {
+      "name": "Text Section"
+    }
+  ]
+}
+{% endschema %}

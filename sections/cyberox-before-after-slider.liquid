@@ -1,0 +1,146 @@
+{% comment %} Cyberox Before After Slider {% endcomment %}
+<section class="cx-ba-section" id="cx-ba-{{ section.id }}" style="background:{{ section.settings.bg_color }};padding:{{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;">
+  <div class="cx-container">
+    {% if section.settings.heading != blank %}
+    <div class="cx-section-header" style="text-align:{{ section.settings.heading_align }};margin-bottom:{{ section.settings.heading_gap }}px;">
+      <h2 style="color:{{ section.settings.heading_color }};font-size:{{ section.settings.heading_size }}px;">{{ section.settings.heading }}</h2>
+      {% if section.settings.subheading != blank %}
+      <p style="color:{{ section.settings.subheading_color }};">{{ section.settings.subheading }}</p>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    {% for block in section.blocks %}
+    {% if block.type == 'comparison' %}
+    <div class="cx-ba-wrapper" {{ block.shopify_attributes }} style="max-width:{{ section.settings.max_width }}px;margin:0 auto {{ section.settings.card_gap }}px;border-radius:{{ section.settings.radius }}px;overflow:hidden;">
+      {% if block.settings.label != blank %}
+      <div class="cx-ba-label" style="color:{{ section.settings.heading_color }};">{{ block.settings.label }}</div>
+      {% endif %}
+      <div class="cx-ba-container" style="border-radius:{{ section.settings.radius }}px;">
+        {% if block.settings.before_image != blank %}
+        <img class="cx-ba-img cx-ba-before" src="{{ block.settings.before_image | img_url: '1200x' }}" alt="{{ block.settings.before_label | default: 'Before' }}" loading="lazy">
+        {% else %}
+        <div class="cx-ba-img cx-ba-before cx-ba-placeholder" style="background:#e0e0e0;display:flex;align-items:center;justify-content:center;min-height:350px;"><span>Before Image</span></div>
+        {% endif %}
+        {% if block.settings.after_image != blank %}
+        <img class="cx-ba-img cx-ba-after" src="{{ block.settings.after_image | img_url: '1200x' }}" alt="{{ block.settings.after_label | default: 'After' }}" loading="lazy">
+        {% else %}
+        <div class="cx-ba-img cx-ba-after cx-ba-placeholder" style="background:#c8e6c9;display:flex;align-items:center;justify-content:center;min-height:350px;"><span>After Image</span></div>
+        {% endif %}
+        <div class="cx-ba-divider" style="background:{{ section.settings.handle_color }};"></div>
+        <div class="cx-ba-handle" style="border-color:{{ section.settings.handle_color }};background:{{ section.settings.handle_bg }};">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="{{ section.settings.handle_color }}"><path d="M8 5l-7 7 7 7M16 5l7 7-7 7" stroke="{{ section.settings.handle_color }}" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        </div>
+        {% if section.settings.show_labels %}
+        <span class="cx-ba-tag cx-ba-tag--before" style="background:{{ section.settings.handle_color }};color:#fff;">{{ block.settings.before_label | default: 'Before' }}</span>
+        <span class="cx-ba-tag cx-ba-tag--after" style="background:{{ section.settings.handle_color }};color:#fff;">{{ block.settings.after_label | default: 'After' }}</span>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+</section>
+
+<style>
+#cx-ba-{{ section.id }} .cx-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+#cx-ba-{{ section.id }} .cx-section-header h2 { margin: 0 0 10px; line-height: 1.2; }
+#cx-ba-{{ section.id }} .cx-section-header p { margin: 0; opacity: 0.8; }
+#cx-ba-{{ section.id }} .cx-ba-label { font-weight: 600; font-size: 16px; margin-bottom: 10px; text-align: center; }
+#cx-ba-{{ section.id }} .cx-ba-container { position: relative; overflow: hidden; user-select: none; cursor: col-resize; }
+#cx-ba-{{ section.id }} .cx-ba-img { display: block; width: 100%; height: {{ section.settings.height }}px; object-fit: cover; pointer-events: none; }
+#cx-ba-{{ section.id }} .cx-ba-after { position: absolute; top: 0; left: 0; clip-path: inset(0 50% 0 0); }
+#cx-ba-{{ section.id }} .cx-ba-divider { position: absolute; top: 0; left: 50%; width: 2px; height: 100%; transform: translateX(-50%); pointer-events: none; z-index: 2; }
+#cx-ba-{{ section.id }} .cx-ba-handle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 44px; height: 44px; border-radius: 50%; border: 3px solid; display: flex; align-items: center; justify-content: center; z-index: 3; cursor: col-resize; box-shadow: 0 2px 10px rgba(0,0,0,0.25); }
+#cx-ba-{{ section.id }} .cx-ba-tag { position: absolute; top: 12px; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; pointer-events: none; z-index: 4; }
+#cx-ba-{{ section.id }} .cx-ba-tag--before { left: 12px; }
+#cx-ba-{{ section.id }} .cx-ba-tag--after { right: 12px; }
+@media(max-width:768px){ #cx-ba-{{ section.id }} .cx-ba-img { height: {{ section.settings.height | times: 0.6 | round }}px; } }
+</style>
+
+<script>
+(function(){
+  var sectionEl = document.getElementById('cx-ba-{{ section.id }}');
+  if (!sectionEl) return;
+  var containers = sectionEl.querySelectorAll('.cx-ba-container');
+  containers.forEach(function(container){
+    var after   = container.querySelector('.cx-ba-after');
+    var divider = container.querySelector('.cx-ba-divider');
+    var handle  = container.querySelector('.cx-ba-handle');
+    var dragging = false;
+
+    function setPos(pct){
+      pct = Math.min(Math.max(pct, 2), 98);
+      after.style.clipPath = 'inset(0 ' + (100 - pct) + '% 0 0)';
+      divider.style.left = pct + '%';
+      handle.style.left  = pct + '%';
+    }
+
+    function getPos(clientX){
+      var rect = container.getBoundingClientRect();
+      return ((clientX - rect.left) / rect.width) * 100;
+    }
+
+    // Mouse
+    handle.addEventListener('mousedown', function(e){ dragging = true; e.preventDefault(); });
+    window.addEventListener('mousemove', function(e){ if(dragging) setPos(getPos(e.clientX)); });
+    window.addEventListener('mouseup', function(){ dragging = false; });
+
+    // Touch
+    handle.addEventListener('touchstart', function(e){ dragging = true; }, {passive:true});
+    window.addEventListener('touchmove', function(e){ if(dragging && e.touches[0]) setPos(getPos(e.touches[0].clientX)); }, {passive:true});
+    window.addEventListener('touchend', function(){ dragging = false; });
+
+    // Click anywhere on container
+    container.addEventListener('click', function(e){ setPos(getPos(e.clientX)); });
+
+    setPos(50);
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "CS Before After Slider",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "See The Difference" },
+    { "type": "select", "id": "heading_align", "label": "Heading Align", "options": [{"value":"left","label":"Left"},{"value":"center","label":"Center"},{"value":"right","label":"Right"}], "default": "center" },
+    { "type": "range", "id": "heading_size", "label": "Heading Size (px)", "min": 20, "max": 60, "step": 2, "default": 36 },
+    { "type": "text", "id": "subheading", "label": "Subheading", "default": "Drag the slider to compare" },
+    { "type": "range", "id": "heading_gap", "label": "Heading Bottom Gap (px)", "min": 10, "max": 80, "step": 2, "default": 40 },
+    { "type": "color", "id": "bg_color", "label": "Background Color", "default": "#ffffff" },
+    { "type": "color", "id": "heading_color", "label": "Heading Color", "default": "#1a1a1a" },
+    { "type": "color", "id": "subheading_color", "label": "Subheading Color", "default": "#666666" },
+    { "type": "color", "id": "handle_color", "label": "Handle / Divider Color", "default": "#ffffff" },
+    { "type": "color", "id": "handle_bg", "label": "Handle Background", "default": "#000000" },
+    { "type": "range", "id": "height", "label": "Slider Height (px)", "min": 200, "max": 700, "step": 20, "default": 420 },
+    { "type": "range", "id": "max_width", "label": "Max Width (px)", "min": 400, "max": 1200, "step": 40, "default": 880 },
+    { "type": "range", "id": "radius", "label": "Border Radius (px)", "min": 0, "max": 30, "step": 2, "default": 12 },
+    { "type": "range", "id": "card_gap", "label": "Gap Between Comparisons (px)", "min": 10, "max": 60, "step": 2, "default": 32 },
+    { "type": "checkbox", "id": "show_labels", "label": "Show Before/After Labels", "default": true },
+    { "type": "range", "id": "padding_top", "label": "Padding Top (px)", "min": 0, "max": 120, "step": 4, "default": 60 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding Bottom (px)", "min": 0, "max": 120, "step": 4, "default": 60 }
+  ],
+  "blocks": [
+    {
+      "type": "comparison",
+      "name": "Comparison",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Comparison Label (optional)", "default": "Comparison" },
+        { "type": "image_picker", "id": "before_image", "label": "Before Image" },
+        { "type": "image_picker", "id": "after_image", "label": "After Image" },
+        { "type": "text", "id": "before_label", "label": "Before Label", "default": "Before" },
+        { "type": "text", "id": "after_label", "label": "After Label", "default": "After" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CS Before After Slider",
+      "blocks": [
+        { "type": "comparison", "settings": { "before_label": "Before", "after_label": "After" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

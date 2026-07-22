@@ -1,0 +1,92 @@
+{% comment %} Cyberox Scrolling Text / Marquee {% endcomment %}
+<section class="cx-marquee-section" id="cx-marquee-{{ section.id }}" style="background:{{ section.settings.bg_color }};padding:{{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;overflow:hidden;">
+  {% assign direction = section.settings.direction %}
+  {% assign duration  = section.settings.speed %}
+  <div class="cx-marquee-track" id="cxMarqueeTrack-{{ section.id }}" style="animation: cx-marquee-{{ section.id }} {{ duration }}s linear infinite {% if direction == 'right' %}reverse{% endif %};">
+    {% for block in section.blocks %}
+    {% if block.type == 'item' %}
+    <span class="cx-marquee-item" {{ block.shopify_attributes }}
+          style="color:{{ block.settings.text_color | default: section.settings.text_color }};font-size:{{ section.settings.font_size }}px;font-weight:{{ section.settings.font_weight }};{% if section.settings.italic %}font-style:italic;{% endif %}">
+      {% if block.settings.icon != 'none' %}
+      <span class="cx-marquee-icon" style="color:{{ section.settings.icon_color }};">{{ block.settings.icon }}</span>
+      {% elsif section.settings.show_separator %}
+      <span class="cx-marquee-sep" style="color:{{ section.settings.icon_color }};">{{ section.settings.separator }}</span>
+      {% endif %}
+      {{ block.settings.text }}
+    </span>
+    {% endif %}
+    {% endfor %}
+    <!-- Duplicate for seamless loop -->
+    {% for block in section.blocks %}
+    {% if block.type == 'item' %}
+    <span class="cx-marquee-item" aria-hidden="true"
+          style="color:{{ block.settings.text_color | default: section.settings.text_color }};font-size:{{ section.settings.font_size }}px;font-weight:{{ section.settings.font_weight }};{% if section.settings.italic %}font-style:italic;{% endif %}">
+      {% if block.settings.icon != 'none' %}
+      <span class="cx-marquee-icon" style="color:{{ section.settings.icon_color }};">{{ block.settings.icon }}</span>
+      {% elsif section.settings.show_separator %}
+      <span class="cx-marquee-sep" style="color:{{ section.settings.icon_color }};">{{ section.settings.separator }}</span>
+      {% endif %}
+      {{ block.settings.text }}
+    </span>
+    {% endif %}
+    {% endfor %}
+  </div>
+</section>
+
+<style>
+#cx-marquee-{{ section.id }} { border-top: {{ section.settings.border_width }}px solid {{ section.settings.border_color }}; border-bottom: {{ section.settings.border_width }}px solid {{ section.settings.border_color }}; }
+#cx-marquee-{{ section.id }} .cx-marquee-track { display: flex; align-items: center; white-space: nowrap; width: max-content; }
+#cx-marquee-{{ section.id }} .cx-marquee-item { display: inline-flex; align-items: center; gap: {{ section.settings.icon_gap }}px; padding: 0 {{ section.settings.item_padding }}px; }
+#cx-marquee-{{ section.id }} .cx-marquee-sep { font-size: {{ section.settings.font_size | times: 0.7 | round }}px; opacity: 0.6; }
+#cx-marquee-{{ section.id }} .cx-marquee-icon { font-size: {{ section.settings.font_size }}px; line-height: 1; }
+#cx-marquee-{{ section.id }} .cx-marquee-track:hover { animation-play-state: {% if section.settings.pause_on_hover %}paused{% else %}running{% endif %}; }
+@keyframes cx-marquee-{{ section.id }} { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+</style>
+
+{% schema %}
+{
+  "name": "CS Scrolling Text",
+  "settings": [
+    { "type": "color", "id": "bg_color", "label": "Background Color", "default": "#1a1a1a" },
+    { "type": "color", "id": "text_color", "label": "Text Color (Default)", "default": "#ffffff" },
+    { "type": "color", "id": "icon_color", "label": "Separator / Icon Color", "default": "#f5a623" },
+    { "type": "color", "id": "border_color", "label": "Border Color", "default": "#333333" },
+    { "type": "range", "id": "border_width", "label": "Border Width (px)", "min": 0, "max": 6, "step": 1, "default": 1 },
+    { "type": "range", "id": "font_size", "label": "Font Size (px)", "min": 10, "max": 48, "step": 1, "default": 16 },
+    { "type": "select", "id": "font_weight", "label": "Font Weight", "options": [{"value":"400","label":"Normal"},{"value":"500","label":"Medium"},{"value":"600","label":"SemiBold"},{"value":"700","label":"Bold"},{"value":"800","label":"ExtraBold"}], "default": "600" },
+    { "type": "checkbox", "id": "italic", "label": "Italic", "default": false },
+    { "type": "range", "id": "item_padding", "label": "Item Horizontal Padding (px)", "min": 8, "max": 80, "step": 4, "default": 32 },
+    { "type": "range", "id": "icon_gap", "label": "Icon Gap (px)", "min": 4, "max": 20, "step": 2, "default": 10 },
+    { "type": "range", "id": "speed", "label": "Scroll Speed (s — lower = faster)", "min": 5, "max": 60, "step": 1, "default": 20 },
+    { "type": "select", "id": "direction", "label": "Scroll Direction", "options": [{"value":"left","label":"Left (default)"},{"value":"right","label":"Right"}], "default": "left" },
+    { "type": "checkbox", "id": "pause_on_hover", "label": "Pause on Hover", "default": true },
+    { "type": "checkbox", "id": "show_separator", "label": "Show Separator Between Items", "default": true },
+    { "type": "text", "id": "separator", "label": "Separator Character", "default": "✦" },
+    { "type": "range", "id": "padding_top", "label": "Padding Top (px)", "min": 0, "max": 60, "step": 2, "default": 14 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding Bottom (px)", "min": 0, "max": 60, "step": 2, "default": 14 }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Text Item",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Text", "default": "Free Shipping on Orders Over $50" },
+        { "type": "color", "id": "text_color", "label": "Custom Text Color", "default": "#ffffff" },
+        { "type": "text", "id": "icon", "label": "Custom Emoji / Icon (type none to use section separator)", "default": "none" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "CS Scrolling Text",
+      "blocks": [
+        { "type": "item", "settings": { "text": "Free Shipping on Orders Over $50", "icon": "none" } },
+        { "type": "item", "settings": { "text": "30-Day Money Back Guarantee", "icon": "none" } },
+        { "type": "item", "settings": { "text": "Secure Checkout", "icon": "none" } },
+        { "type": "item", "settings": { "text": "24/7 Customer Support", "icon": "none" } },
+        { "type": "item", "settings": { "text": "New Arrivals Every Week", "icon": "none" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
