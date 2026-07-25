@@ -86,12 +86,23 @@
     "pagefly-home": {
       "type": "pagefly-home",
       "settings": {}
+    },
+    "custom_liquid_aqpdkK": {
+      "type": "custom-liquid",
+      "name": "t:sections.custom-liquid.presets.name",
+      "settings": {
+        "custom_liquid": "<div class=\"big-img\">\n<img src=\"https://qquqbq-ek.myshopify.com/cdn/shop/files/6a6e044b-53ce-4148-91de-1e5b9af7d534.jpg?v=1784717984&width=2400\" width=\"100%\" />\n</div>",
+        "color_scheme": "",
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
     }
   },
   "order": [
     "image_banner",
     "featured_collection",
     "text_section_cydJk8",
-    "pagefly-home"
+    "pagefly-home",
+    "custom_liquid_aqpdkK"
   ]
 }
