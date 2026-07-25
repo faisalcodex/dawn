@@ -91,7 +91,7 @@
       "type": "custom-liquid",
       "name": "t:sections.custom-liquid.presets.name",
       "settings": {
-        "custom_liquid": "<div class=\"big-img\">\n<img src=\"https://qquqbq-ek.myshopify.com/cdn/shop/files/6a6e044b-53ce-4148-91de-1e5b9af7d534.jpg?v=1784717984&width=2400\" width=\"100%\" />\n</div>",
+        "custom_liquid": "<div class=\"big-img animate__animated animate__bounce animate__delay-2s\">\n<img src=\"https://qquqbq-ek.myshopify.com/cdn/shop/files/6a6e044b-53ce-4148-91de-1e5b9af7d534.jpg?v=1784717984&width=2400\" width=\"100%\" />\n</div>",
         "color_scheme": "",
         "padding_top": 40,
         "padding_bottom": 52
